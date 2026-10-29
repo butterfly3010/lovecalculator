@@ -256,95 +256,102 @@
   </main>
 
   <script>
-    // Special names: either name guarantees 100%.
-    const SPECIAL_NAMES = ["omar", "humu"];
+const form = document.getElementById("loveForm");
+const result = document.getElementById("result");
+const error = document.getElementById("error");
 
-    const form = document.getElementById("loveForm");
-    const result = document.getElementById("result");
-    const error = document.getElementById("error");
+function normalize(name) {
+  return name.trim().toLowerCase();
+}
 
-    function normalize(name) {
-      return name.trim().toLocaleLowerCase("en");
-    }
+function getLovePercentage(first, second) {
+  const a = normalize(first);
+  const b = normalize(second);
 
-    // Same pair always gets the same score.
-    function getLovePercentage(first, second) {
-      const pair = [normalize(first), normalize(second)]
-        .sort()
-        .join("|");
+  // Only Omar + Humu gets 100%
+  if (
+    (a === "omar" && b === "humu") ||
+    (a === "humu" && b === "omar")
+  ) {
+    return 100;
+  }
 
-      let hash = 0;
+  // If either name is Omar or Humu,
+  // but the pair is not Omar + Humu, return 0%.
+  if (
+    a === "omar" || a === "humu" ||
+    b === "omar" || b === "humu"
+  ) {
+    return 0;
+  }
 
-      for (let i = 0; i < pair.length; i++) {
-        hash = (hash * 31 + pair.charCodeAt(i)) >>> 0;
-      }
+  // Other names get a consistent score.
+  const pair = [a, b].sort().join("|");
+  let hash = 0;
 
-      return 40 + (hash % 61);
-    }
+  for (let i = 0; i < pair.length; i++) {
+    hash = (hash * 31 + pair.charCodeAt(i)) >>> 0;
+  }
 
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
+  return 40 + (hash % 61);
+}
 
-      const first = document.getElementById("name1").value.trim();
-      const second = document.getElementById("name2").value.trim();
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
 
-      error.textContent = "";
-      result.style.display = "none";
+  const first = document.getElementById("name1").value.trim();
+  const second = document.getElementById("name2").value.trim();
 
-      if (!first || !second) {
-        error.textContent = "Please enter both names!";
-        return;
-      }
+  error.textContent = "";
+  result.style.display = "none";
 
-      if (normalize(first) === normalize(second)) {
-        error.textContent = "Please enter two different names! ❤️";
-        return;
-      }
+  if (!first || !second) {
+    error.textContent = "Please enter both names!";
+    return;
+  }
 
-      const hasSpecialName =
-        SPECIAL_NAMES.includes(normalize(first)) ||
-        SPECIAL_NAMES.includes(normalize(second));
+  if (normalize(first) === normalize(second)) {
+    error.textContent = "Please enter two different names! ❤️";
+    return;
+  }
 
-      const score = hasSpecialName
-        ? 100
-        : getLovePercentage(first, second);
+  const score = getLovePercentage(first, second);
 
-      document.getElementById("couple").textContent =
-        first + " ❤️ " + second;
+  document.getElementById("couple").textContent =
+    first + " ❤️ " + second;
 
-      document.getElementById("percentage").textContent =
-        score + "%";
+  document.getElementById("percentage").textContent =
+    score + "%";
 
-      document.getElementById("message").textContent =
-        score === 100
-          ? "💍 TRUE LOVE! A perfect match made in heaven! 💖"
-          : score >= 80
-            ? "😍 Amazing chemistry! Love is in the air!"
-            : score >= 60
-              ? "💕 There might be a beautiful connection!"
-              : "😊 Every love story starts somewhere!";
+  document.getElementById("message").textContent =
+    score === 100
+      ? "💍 TRUE LOVE! A perfect match made in heaven! 💖"
+      : score === 0
+        ? "💔 Not a match! Maybe destiny has other plans..."
+        : score >= 80
+          ? "😍 Amazing chemistry! Love is in the air!"
+          : score >= 60
+            ? "💕 There might be a beautiful connection!"
+            : "😊 Every love story starts somewhere!";
 
-      const fill = document.getElementById("progressFill");
-      const progress = document.getElementById("progress");
+  const fill = document.getElementById("progressFill");
+  const progress = document.getElementById("progress");
 
-      fill.style.width = "0%";
-      progress.setAttribute("aria-valuenow", "0");
-      result.style.display = "block";
+  fill.style.width = "0%";
+  progress.setAttribute("aria-valuenow", "0");
+  result.style.display = "block";
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          fill.style.width = score + "%";
-          progress.setAttribute("aria-valuenow", String(score));
-        });
-      });
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fill.style.width = score + "%";
+      progress.setAttribute("aria-valuenow", String(score));
     });
+  });
+});
 
-    document.getElementById("again").addEventListener("click", () => {
-      form.reset();
-      result.style.display = "none";
-      error.textContent = "";
-      document.getElementById("name1").focus();
-    });
-  </script>
-</body>
-</html>
+document.getElementById("again").addEventListener("click", () => {
+  form.reset();
+  result.style.display = "none";
+  error.textContent = "";
+  document.getElementById("name1").focus();
+});
