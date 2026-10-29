@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#180b20">
+  <title>Love Calculator ❤️ | HeyOmxr</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #fff;
+      background:
+        radial-gradient(circle at top, #57204f 0%, transparent 45%),
+        linear-gradient(135deg, #100817, #260c2b, #100817);
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      padding: 32px 25px;
+      text-align: center;
+      border: 1px solid #ff70b8;
+      border-radius: 25px;
+      background: rgba(30, 12, 35, 0.94);
+      box-shadow: 0 0 45px #ff3f9e20;
+    }
+
+    .heart {
+      font-size: 68px;
+      margin-bottom: 12px;
+      animation: heartbeat 1.2s infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.13); }
+    }
+
+    h1 {
+      font-size: 30px;
+      color: #ff8fc9;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: #d9bfd6;
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      text-align: left;
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ffc1df;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #71365f;
+      border-radius: 12px;
+      background: #25152c;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus {
+      border-color: #ff70b8;
+    }
+
+    input::placeholder {
+      color: #a68ca5;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      background: linear-gradient(90deg, #ff398d, #e64bca);
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      opacity: 0.92;
+    }
+
+    #result {
+      display: none;
+      margin-top: 28px;
+      animation: appear 0.5s ease;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .names {
+      color: #ffd2e8;
+      font-size: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .percentage {
+      color: #ff85c5;
+      font-size: 58px;
+      font-weight: bold;
+      margin: 15px 0;
+      text-shadow: 0 0 22px #ff3f9e55;
+    }
+
+    .progress {
+      width: 100%;
+      height: 12px;
+      border-radius: 20px;
+      background: #43223f;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(90deg, #ff398d, #ffb0dc);
+      transition: width 1.3s ease;
+    }
+
+    .message {
+      color: #ffd0e8;
+      line-height: 1.7;
+      margin-top: 17px;
+      font-size: 15px;
+    }
+
+    .again {
+      background: #39213d;
+      border: 1px solid #79426c;
+      margin-top: 20px;
+    }
+
+    .footer {
+      margin-top: 28px;
+      color: #bd96b8;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .footer span {
+      color: #ff8fc9;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #ff9fbf;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="heart">💖</div>
+
+    <h1>Love Calculator</h1>
+
+    <p class="subtitle">
+      Two names, one love story.<br>
+      Discover your love compatibility!
+    </p>
+
+    <form id="loveForm">
+      <div class="input-group">
+        <label for="name1">Your Name ❤️</label>
+        <input
+          id="name1"
+          type="text"
+          placeholder="Enter first name"
+          maxlength="40"
+          autocomplete="off"
+          required
+        >
+      </div>
+
+      <div class="input-group">
+        <label for="name2">Your Crush's Name 💕</label>
+        <input
+          id="name2"
+          type="text"
+          placeholder="Enter second name"
+          maxlength="40"
+          autocomplete="off"
+          required
+        >
+      </div>
+
+      <button type="submit">Calculate Love 💘</button>
+      <p id="error" class="error" role="alert"></p>
+    </form>
+
+    <section id="result" aria-live="polite">
+      <p class="names" id="couple"></p>
+      <div class="percentage" id="percentage">0%</div>
+
+      <div
+        class="progress"
+        role="progressbar"
+        aria-label="Love compatibility"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+        id="progress"
+      >
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <p class="message" id="message"></p>
+
+      <button class="again" id="again" type="button">
+        Try Another Couple 🔄
+      </button>
+    </section>
+
+    <footer class="footer">
+      Made with ❤️ by <span>HeyOmxr</span>
+    </footer>
+  </main>
+
+  <script>
+    // Special names: either name guarantees 100%.
+    const SPECIAL_NAMES = ["omar", "humu"];
+
+    const form = document.getElementById("loveForm");
+    const result = document.getElementById("result");
+    const error = document.getElementById("error");
+
+    function normalize(name) {
+      return name.trim().toLocaleLowerCase("en");
+    }
+
+    // Same pair always gets the same score.
+    function getLovePercentage(first, second) {
+      const pair = [normalize(first), normalize(second)]
+        .sort()
+        .join("|");
+
+      let hash = 0;
+
+      for (let i = 0; i < pair.length; i++) {
+        hash = (hash * 31 + pair.charCodeAt(i)) >>> 0;
+      }
+
+      return 40 + (hash % 61);
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const first = document.getElementById("name1").value.trim();
+      const second = document.getElementById("name2").value.trim();
+
+      error.textContent = "";
+      result.style.display = "none";
+
+      if (!first || !second) {
+        error.textContent = "Please enter both names!";
+        return;
+      }
+
+      if (normalize(first) === normalize(second)) {
+        error.textContent = "Please enter two different names! ❤️";
+        return;
+      }
+
+      const hasSpecialName =
+        SPECIAL_NAMES.includes(normalize(first)) ||
+        SPECIAL_NAMES.includes(normalize(second));
+
+      const score = hasSpecialName
+        ? 100
+        : getLovePercentage(first, second);
+
+      document.getElementById("couple").textContent =
+        first + " ❤️ " + second;
+
+      document.getElementById("percentage").textContent =
+        score + "%";
+
+      document.getElementById("message").textContent =
+        score === 100
+          ? "💍 TRUE LOVE! A perfect match made in heaven! 💖"
+          : score >= 80
+            ? "😍 Amazing chemistry! Love is in the air!"
+            : score >= 60
+              ? "💕 There might be a beautiful connection!"
+              : "😊 Every love story starts somewhere!";
+
+      const fill = document.getElementById("progressFill");
+      const progress = document.getElementById("progress");
+
+      fill.style.width = "0%";
+      progress.setAttribute("aria-valuenow", "0");
+      result.style.display = "block";
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          fill.style.width = score + "%";
+          progress.setAttribute("aria-valuenow", String(score));
+        });
+      });
+    });
+
+    document.getElementById("again").addEventListener("click", () => {
+      form.reset();
+      result.style.display = "none";
+      error.textContent = "";
+      document.getElementById("name1").focus();
+    });
+  </script>
+</body>
+</html>
